@@ -35,3 +35,13 @@ export interface ChatInputProps {
   bordered?: boolean;
   className?: string;
 }
+
+export interface featureProposal{
+  title: string;
+  description: string;
+}
+
+export interface ChatResponse {
+  message: string;
+  proposal: featureProposal;
+}
