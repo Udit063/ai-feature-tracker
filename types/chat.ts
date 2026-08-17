@@ -4,6 +4,7 @@ export interface ChatProps {
   variant?: "empty" | "chat";
   messages?: ChatMessage[];
   onSend?: (value: string) => void;
+  isLoading: boolean,
   className?: string;
 }
 
@@ -32,6 +33,7 @@ export interface ChatMessage {
 export interface ChatInputProps {
   placeholder?: string;
   onSend?: (value: string) => void;
+  isLoading: boolean
   bordered?: boolean;
   className?: string;
 }

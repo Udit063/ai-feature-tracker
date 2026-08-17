@@ -12,14 +12,14 @@ export function ChatPage(){
         <span className="text-xs font-medium uppercase tracking-wide text-zinc-400">
           Empty state
         </span>
-        <Chat variant="empty" />
+        <Chat variant="empty" onSend={sendMessage} isLoading={isLoading} />
       </div>
 
       <div className="flex flex-col items-center gap-3">
         <span className="text-xs font-medium uppercase tracking-wide text-zinc-400">
           Chat state
         </span>
-        <Chat variant="chat" messages={messages} />
+        <Chat variant="chat" messages={messages} onSend={sendMessage} isLoading={isLoading} />
       </div>
     </div>
   );

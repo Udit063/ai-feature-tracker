@@ -8,6 +8,7 @@ import { ChatInputProps } from "@/types/chat";
 export function ChatInput({
   placeholder = "Describe the feature you're building...",
   onSend,
+  isLoading,
   bordered = false,
   className = "",
 }: ChatInputProps) {
@@ -32,6 +33,7 @@ export function ChatInput({
       <div className="flex flex-1 items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2.5 transition-colors focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100">
         <button
           type="button"
+          disabled={isLoading}
           className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 hover:text-zinc-600"
           aria-label="Add emoji"
         >
@@ -39,6 +41,7 @@ export function ChatInput({
         </button>
         <input
           value={value}
+          disabled={isLoading}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
@@ -48,6 +51,7 @@ export function ChatInput({
 
       <Button
         onClick={handleSend}
+        disabled={isLoading}
         size="icon"
         className="h-10 w-10 shrink-0 rounded-full bg-indigo-600 hover:bg-indigo-700"
         aria-label="Send message"

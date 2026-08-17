@@ -17,6 +17,7 @@ export function useChat() {
       },
     ]);
 
+    setError(null);
     setIsLoading(true);
 
     const url = "/api/chat";

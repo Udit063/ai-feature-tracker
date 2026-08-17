@@ -14,6 +14,7 @@ export function Chat({
   variant = "empty",
   messages = [],
   onSend,
+  isLoading,
   className,
 }: ChatProps) {
   if (variant === "empty") {
@@ -26,7 +27,7 @@ export function Chat({
       >
         <ChatHeader subtitle="👋 Hi! Tell me what you're building." bordered />
         <div className="px-6 pt-4">
-          <ChatInput onSend={onSend} />
+          <ChatInput onSend={onSend} isLoading={isLoading} />
         </div>
       </div>
     );
@@ -41,7 +42,7 @@ export function Chat({
     >
       <ChatHeader showMenu />
       <MessageList messages={messages} />
-      <ChatInput onSend={onSend} bordered />
+      <ChatInput onSend={onSend} isLoading={isLoading} bordered />
     </div>
   );
 }
