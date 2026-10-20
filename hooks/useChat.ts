@@ -8,8 +8,8 @@ export function useChat() {
 
   async function sendMessage(message: string): Promise<ChatResponse> {
     const temporaryId = crypto.randomUUID();
-    setMessages([
-      ...messages,
+    setMessages((prev) => [
+      ...prev,
       {
         id: temporaryId,
         role: "user",
