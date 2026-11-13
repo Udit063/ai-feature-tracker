@@ -47,7 +47,6 @@ export function ChatPage() {
     }
 
     getFeatures();
-    handleUpdate(5, { status: "upcoming" });
   }, []);
 
   async function handleSend(message: string) {
@@ -123,6 +122,23 @@ export function ChatPage() {
     }
   }
 
+  async function handleDelete(id: number) {
+    try {
+      const response = await fetch(`/api/features/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete feature!");
+      }
+
+      setFeatures((prev) => prev.filter((f) => f.id !== id));
+    } catch (error) {
+      console.error("Failed to delete feature: ", error);
+      throw error;
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-wrap items-start justify-center gap-8 bg-zinc-50 p-10">
       <div className="flex flex-col items-center gap-3">
@@ -151,6 +167,7 @@ export function ChatPage() {
               key={feature.id}
               feature={feature}
               onUpdate={handleUpdate}
+              onDelete={handleDelete}
             />
           ))}
         </div>

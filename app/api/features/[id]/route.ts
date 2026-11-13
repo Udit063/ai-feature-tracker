@@ -60,7 +60,10 @@ export async function PATCH(
   }
 }
 
-export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const { id } = await params;
 
@@ -80,6 +83,8 @@ export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
       { status: 200 },
     );
   } catch (error) {
+    console.error("Failed to delete feature:", error);
+
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
