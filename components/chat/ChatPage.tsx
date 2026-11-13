@@ -2,10 +2,21 @@
 
 import { Chat } from "@/components/chat/Chat";
 import { useChat } from "@/hooks/useChat";
-import { FeatureCard } from "./FeatureCard";
+import { FeatureCard } from "../features/FeatureCard";
 import { useEffect, useState } from "react";
-import { Feature as FeatureResponse, FeatureProposal } from "@/types/chat";
-import { featureListSchema, featureSchema } from "@/lib/validations/feature";
+import {
+  Feature as FeatureResponse,
+  FeatureProposal,
+  Feature,
+} from "@/types/chat";
+import {
+  featureListSchema,
+  featureSchema,
+  updateFeatureSchema,
+} from "@/lib/validations/feature";
+import { FeatureItem } from "../features/FeatureItem";
+
+type featureUpdate = Partial<Pick<Feature, "title" | "description" | "status">>;
 
 export function ChatPage() {
   const { messages, sendMessage, isLoading, error } = useChat();
@@ -36,6 +47,7 @@ export function ChatPage() {
     }
 
     getFeatures();
+    handleUpdate(5, { status: "upcoming" });
   }, []);
 
   async function handleSend(message: string) {
@@ -76,7 +88,38 @@ export function ChatPage() {
 
       setFeatures((prev) => [...prev, res.data]);
     } catch (error) {
-      console.error("Failed to approve feature:", error);
+      console.error("Failed to approve feature: ", error);
+    }
+  }
+
+  async function handleUpdate(id: number, updates: featureUpdate) {
+    try {
+      const response = await fetch(`/api/features/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update feature!");
+      }
+
+      const data = await response.json();
+
+      const res = featureSchema.safeParse(data.feature);
+
+      if (!res.success) {
+        throw new Error("Invalid feature response from server");
+      }
+
+      setFeatures((prev) =>
+        prev.map((f) => (f.id === res.data.id ? res.data : f)),
+      );
+    } catch (error) {
+      console.error("Failed to update feature: ", error);
+      throw error;
     }
   }
 
@@ -102,13 +145,15 @@ export function ChatPage() {
         {proposal && (
           <FeatureCard proposal={proposal} onApprove={handleApprove} />
         )}
-        {features.map((feature) => (
-          <div key={feature.id}>
-            <h3>{feature.title}</h3>
-            <p>{feature.description}</p>
-            <p>{feature.status}</p>
-          </div>
-        ))}
+        <div className="flex w-full max-w-md flex-col gap-3">
+          {features.map((feature) => (
+            <FeatureItem
+              key={feature.id}
+              feature={feature}
+              onUpdate={handleUpdate}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
