@@ -38,6 +38,15 @@ export interface ChatInputProps {
   className?: string;
 }
 
+export interface Feature {
+  id: number;
+  title: string;
+  status: string;
+  description: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
 export interface FeatureProposal {
   title: string;
   description: string;

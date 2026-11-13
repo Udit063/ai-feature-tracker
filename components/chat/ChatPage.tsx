@@ -3,21 +3,14 @@
 import { Chat } from "@/components/chat/Chat";
 import { useChat } from "@/hooks/useChat";
 import { FeatureCard } from "./FeatureCard";
-import { useEffect, useState } from "react";
-import { FeatureProposal } from "@/types/chat";
+import { useState } from "react";
+import { Feature as FeatureResponse, FeatureProposal } from "@/types/chat";
+import { featureSchema } from "@/lib/validations/feature";
 
 export function ChatPage() {
   const { messages, sendMessage, isLoading, error } = useChat();
   const [proposal, setProposal] = useState<FeatureProposal | null>(null);
-
-  // useEffect(()=>{
-  //   const new_proposal = {
-  //     title: "hello",
-  //     description: "aise ho"
-  //   }
-
-  //   setProposal(new_proposal);
-  // }, [])
+  const [features, setFeatures] = useState<FeatureResponse[]>([]);
 
   async function handleSend(message: string) {
     try {
@@ -32,9 +25,33 @@ export function ChatPage() {
     }
   }
 
-  function handleApprove(approvedProposal: FeatureProposal) {
-    // Temporary: we'll connect this to the database later.
-    console.log("Approved proposal:", approvedProposal);
+  async function handleApprove(approvedProposal: FeatureProposal) {
+    try {
+      const response = await fetch("/api/features", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(approvedProposal),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create feature");
+      }
+
+      const data = await response.json();
+
+      const res = featureSchema.safeParse(data.feature);
+
+      // it's belong to zod and not api which had been sent by safeParse with new object containing success and data/error
+      if (!res.success) {
+        throw new Error("Invalid feature response from server");
+      }
+
+      setFeatures((prev) => [...prev, res.data]);
+    } catch (error) {
+      console.error("Failed to approve feature:", error);
+    }
   }
 
   return (
@@ -59,6 +76,13 @@ export function ChatPage() {
         {proposal && (
           <FeatureCard proposal={proposal} onApprove={handleApprove} />
         )}
+        {features.map((feature) => (
+          <div key={feature.id}>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+            <p>{feature.status}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

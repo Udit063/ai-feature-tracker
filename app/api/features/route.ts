@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { featureSchema } from "@/lib/validations/feature";
+import { featureProposalSchema } from "@/lib/validations/feature";
 
 export async function GET() {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const result = featureSchema.safeParse(body);
+    const result = featureProposalSchema.safeParse(body);
 
     if (!result.success) {
       return Response.json({ error: result.error.flatten() }, { status: 400 });
