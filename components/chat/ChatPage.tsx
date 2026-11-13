@@ -3,12 +3,21 @@
 import { Chat } from "@/components/chat/Chat";
 import { useChat } from "@/hooks/useChat";
 import { FeatureCard } from "./FeatureCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FeatureProposal } from "@/types/chat";
 
 export function ChatPage() {
   const { messages, sendMessage, isLoading, error } = useChat();
   const [proposal, setProposal] = useState<FeatureProposal | null>(null);
+
+  // useEffect(()=>{
+  //   const new_proposal = {
+  //     title: "hello",
+  //     description: "aise ho"
+  //   }
+
+  //   setProposal(new_proposal);
+  // }, [])
 
   async function handleSend(message: string) {
     try {
