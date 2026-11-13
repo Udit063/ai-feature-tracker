@@ -13,3 +13,5 @@ export const featureSchema = z.object({
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
+
+export const featureListSchema = z.array(featureSchema);

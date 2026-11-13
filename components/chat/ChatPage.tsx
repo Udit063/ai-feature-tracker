@@ -3,14 +3,40 @@
 import { Chat } from "@/components/chat/Chat";
 import { useChat } from "@/hooks/useChat";
 import { FeatureCard } from "./FeatureCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Feature as FeatureResponse, FeatureProposal } from "@/types/chat";
-import { featureSchema } from "@/lib/validations/feature";
+import { featureListSchema, featureSchema } from "@/lib/validations/feature";
 
 export function ChatPage() {
   const { messages, sendMessage, isLoading, error } = useChat();
   const [proposal, setProposal] = useState<FeatureProposal | null>(null);
   const [features, setFeatures] = useState<FeatureResponse[]>([]);
+
+  useEffect(() => {
+    async function getFeatures() {
+      try {
+        const response = await fetch("/api/features");
+
+        if (!response.ok) {
+          throw new Error("Unable to fetch features");
+        }
+
+        const data = await response.json();
+
+        const res = featureListSchema.safeParse(data.features);
+
+        if (!res.success) {
+          throw new Error("Invalid response!");
+        }
+
+        setFeatures(res.data);
+      } catch (error) {
+        console.error("Failed to fetch features:", error);
+      }
+    }
+
+    getFeatures();
+  }, []);
 
   async function handleSend(message: string) {
     try {
