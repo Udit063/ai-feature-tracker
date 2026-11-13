@@ -59,3 +59,40 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+
+    const featureId = Number(id);
+
+    if (!Number.isInteger(featureId) || featureId <= 0) {
+      return Response.json(
+        { success: false, error: "Invalid feature ID!" },
+        { status: 400 },
+      );
+    }
+
+    await prisma.features.delete({ where: { id: featureId } });
+
+    return Response.json(
+      { success: true, message: "Feature deleted successfully!" },
+      { status: 200 },
+    );
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return Response.json(
+        { success: false, error: "Feature not found!" },
+        { status: 404 },
+      );
+    }
+
+    return Response.json(
+      { success: false, error: "Failed to delete feature" },
+      { status: 500 },
+    );
+  }
+}
