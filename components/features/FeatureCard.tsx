@@ -37,7 +37,7 @@ export function FeatureCard({ proposal, onApprove }: FeatureCardProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <button
           type="button"
           className="flex w-full max-w-md items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-4 text-left shadow-sm transition-colors hover:border-indigo-300 hover:bg-indigo-50/40"
@@ -101,7 +101,7 @@ export function FeatureCard({ proposal, onApprove }: FeatureCardProps) {
         </div>
 
         <DialogFooter className="mt-2 gap-2 sm:gap-2">
-          <DialogClose asChild>
+          <DialogClose>
             <Button type="button" variant="outline">
               Cancel
             </Button>
